@@ -10,12 +10,12 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 
-class TestOnlyOpenGradleDetector : Detector(), GradleScanner {
+class OpenForTestingGradleDetector : Detector(), GradleScanner {
 
     companion object {
 
         private val IMPLEMENTATION = Implementation(
-            TestOnlyOpenGradleDetector::class.java,
+            OpenForTestingGradleDetector::class.java,
             Scope.GRADLE_SCOPE
         )
 

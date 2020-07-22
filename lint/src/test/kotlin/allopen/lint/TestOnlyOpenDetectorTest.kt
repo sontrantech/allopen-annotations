@@ -5,18 +5,18 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-class TestOnlyOpenDetectorTest : LintDetectorTest() {
+class OpenForTestingDetectorTest : LintDetectorTest() {
 
-    override fun getDetector() = TestOnlyOpenDetector()
+    override fun getDetector() = OpenForTestingDetector()
     override fun getIssues() = listOf(
-        TestOnlyOpenDetector.TYPE_USAGE,
-        TestOnlyOpenDetector.INHERITANCE_USAGE
+        OpenForTestingDetector.TYPE_USAGE,
+        OpenForTestingDetector.INHERITANCE_USAGE
     )
 
     @Test
     fun testNoWarnings() {
         val result = lintFiles(
-            testOnlyOpen(),
+            openForTesting(),
             pet()
         )
 
@@ -26,7 +26,7 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
     @Test
     fun testErrorsInKotlin() {
         val result = lintFiles(
-            testOnlyOpen(),
+            openForTesting(),
             pet(),
             tiger()
         )
@@ -35,10 +35,10 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
             result,
             equalTo(
                 """
-                |java/Tiger.kt:1: Error: This type is open for tests only [InheritingTestOnlyOpenType]
+                |java/Tiger.kt:1: Error: This type is open for tests only [InheritingOpenForTestingType]
                 |class Tiger : Pet()
                 |              ~~~
-                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [TestOnlyOpenType]
+                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [OpenForTestingType]
                 |class Pet
                 |      ~~~
                 |2 errors, 0 warnings
@@ -51,7 +51,7 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
     @Test
     fun testErrorsInJava() {
         val result = lintFiles(
-            testOnlyOpen(),
+            openForTesting(),
             pet(),
             wolf()
         )
@@ -60,10 +60,10 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
             result,
             equalTo(
                 """
-                |java/Wolf.java:1: Error: This type is open for tests only [InheritingTestOnlyOpenType]
+                |java/Wolf.java:1: Error: This type is open for tests only [InheritingOpenForTestingType]
                 |public class Wolf extends Pet {
                 |                          ~~~
-                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [TestOnlyOpenType]
+                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [OpenForTestingType]
                 |class Pet
                 |      ~~~
                 |2 errors, 0 warnings
@@ -76,7 +76,7 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
     @Test
     fun testMultipleErrors() {
         val result = lintFiles(
-            testOnlyOpen(),
+            openForTesting(),
             pet(),
             tiger(),
             wolf()
@@ -86,13 +86,13 @@ class TestOnlyOpenDetectorTest : LintDetectorTest() {
             result,
             equalTo(
                 """
-                |java/Tiger.kt:1: Error: This type is open for tests only [InheritingTestOnlyOpenType]
+                |java/Tiger.kt:1: Error: This type is open for tests only [InheritingOpenForTestingType]
                 |class Tiger : Pet()
                 |              ~~~
-                |java/Wolf.java:1: Error: This type is open for tests only [InheritingTestOnlyOpenType]
+                |java/Wolf.java:1: Error: This type is open for tests only [InheritingOpenForTestingType]
                 |public class Wolf extends Pet {
                 |                          ~~~
-                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [TestOnlyOpenType]
+                |java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [OpenForTestingType]
                 |class Pet
                 |      ~~~
                 |3 errors, 0 warnings

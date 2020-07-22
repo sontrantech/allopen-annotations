@@ -6,4 +6,4 @@ package allopen.annotations
 @Open
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class TestOnlyOpen
+annotation class OpenForTesting

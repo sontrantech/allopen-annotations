@@ -50,34 +50,34 @@ buildscript {
 // module level build.gradle
 apply plugin: "kotlin-allopen"
 ```
-This library provides just two annotations `Open` and `TestOnlyOpen`. `Open` is a meta annotation, use it with `all-open` compiler plugin. 
+This library provides just two annotations `Open` and `OpenForTesting`. `Open` is a meta annotation, use it with `all-open` compiler plugin. 
 
 ```
 allOpen {
     annotation("allopen.annotations.Open")
 }
 ```
-Use `TestOnlyOpen` annotation on the class that you want to make open for tests.
+Use `OpenForTesting` annotation on the class that you want to make open for tests.
 
 ```
-@TestOnlyOpen
+@OpenForTesting
 class Pet
 ```
 
 ## Lint
 
-* **InheritingTestOnlyOpenType** - Detects type that inherits test only open type.
+* **InheritingOpenForTestingType** - Detects type that inherits test only open type.
 
 	```
-	java/Tiger.kt:1: Error: This type is open for tests only [InheritingTestOnlyOpenType]
+	java/Tiger.kt:1: Error: This type is open for tests only [InheritingOpenForTestingType]
 	class Tiger : Pet()
 	              ~~~
 	1 errors, 0 warnings
 	```
-* **TestOnlyOpenType** - Detects test only open type which is being inherited.
+* **OpenForTestingType** - Detects test only open type which is being inherited.
 	
 	```
-	java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [TestOnlyOpenType]
+	java/Pet.kt:4: Error: This type is open for tests only, still being inherited from [OpenForTestingType]
 	class Pet
 	      ~~~
 	1 errors, 0 warnings
@@ -86,7 +86,7 @@ class Pet
 
 	```
 	build.gradle:4: Error: Type is not meta annotation [NonMetaAnnotation]
-	    annotation("allopen.annotations.TestOnlyOpen")
+	    annotation("allopen.annotations.OpenForTesting")
 	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	1 errors, 0 warnings
 	```

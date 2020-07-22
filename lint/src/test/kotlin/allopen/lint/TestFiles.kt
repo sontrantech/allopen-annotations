@@ -5,24 +5,24 @@ import com.android.tools.lint.checks.infrastructure.LintDetectorTest.gradle
 import com.android.tools.lint.checks.infrastructure.LintDetectorTest.java
 import com.android.tools.lint.checks.infrastructure.LintDetectorTest.kotlin
 
-fun testOnlyOpen(): TestFile = kotlin(
-    "java/allopen/annotations/TestOnlyOpen.kt",
+fun openForTesting(): TestFile = kotlin(
+    "java/allopen/annotations/OpenForTesting.kt",
     """
     |package allopen.annotations
     |
     |@Open
     |@Target(AnnotationTarget.CLASS)
     |@Retention(AnnotationRetention.SOURCE)
-    |annotation class TestOnlyOpen
+    |annotation class OpenForTesting
     """.trimMargin()
 )
 
 fun pet(): TestFile = kotlin(
     "java/Pet.kt",
     """
-    |import allopen.annotations.TestOnlyOpen
+    |import allopen.annotations.OpenForTesting
     |
-    |@TestOnlyOpen
+    |@OpenForTesting
     |class Pet
     """.trimMargin()
 )
@@ -53,13 +53,13 @@ fun allOpenBuildScript(): TestFile = gradle(
     """.trimMargin()
 )
 
-fun allTestOnlyOpenBuildScript(): TestFile = gradle(
+fun allOpenForTestingBuildScript(): TestFile = gradle(
     "build.gradle",
     """
     |apply plugin: 'kotlin-allopen'
     |
     |allOpen {
-    |    annotation("allopen.annotations.TestOnlyOpen")
+    |    annotation("allopen.annotations.OpenForTesting")
     |}
     """.trimMargin()
 )

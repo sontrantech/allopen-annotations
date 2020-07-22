@@ -17,20 +17,20 @@ import org.jetbrains.uast.UElement
 import org.jetbrains.uast.toUElement
 
 /**
- * Detects usage of type which is open for tests only(annotated  with `@TestOnlyOpen`) but being used in production
+ * Detects usage of type which is open for tests only(annotated  with `@OpenForTesting`) but being used in production
  * code.
  */
-class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
+class OpenForTestingDetector : Detector(), SourceCodeScanner {
 
     companion object {
 
         private val IMPLEMENTATION = Implementation(
-            TestOnlyOpenDetector::class.java,
+            OpenForTestingDetector::class.java,
             Scope.JAVA_FILE_SCOPE
         )
 
         val TYPE_USAGE = Issue.create(
-            "TestOnlyOpenType",
+            "OpenForTestingType",
             "This type is not open",
             "Type with @$TEST_ONLY_OPEN annotation is open for tests only. " +
                 "Consider making it open explicitly.",
@@ -41,7 +41,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
         )
 
         val INHERITANCE_USAGE = Issue.create(
-            "InheritingTestOnlyOpenType",
+            "InheritingOpenForTestingType",
             "This type is not open, so it cannot be inherited",
             "Type with @$TEST_ONLY_OPEN annotation is open for tests only, so it cannot be inherited.",
             Category.CORRECTNESS,
@@ -51,7 +51,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
         )
     }
 
-    private val testOnlyOpenTypes = mutableMapOf<String, Location>()
+    private val openForTestingTypes = mutableMapOf<String, Location>()
     private val cache = mutableListOf<String>()
 
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
@@ -65,7 +65,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
     }
 
     override fun afterCheckRootProject(context: Context) {
-        testOnlyOpenTypes.forEach {
+        openForTestingTypes.forEach {
 
             if (cache.contains(it.key)) {
                 reportTypeUsage(context, it.value)
@@ -76,7 +76,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
     private fun visitClassImpl(context: JavaContext, node: UClass) {
         node.qualifiedName?.let { qualifiedName ->
 
-            if (isCached(qualifiedName) || hasTestOnlyOpenAnnotation(node)) {
+            if (isCached(qualifiedName) || hasOpenForTestingAnnotation(node)) {
                 addTestOnlyType(qualifiedName, context.getNameLocation(node))
             }
         }
@@ -86,7 +86,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
             if (isCached(parentClass)) {
                 reportInheritanceUsage(context, node, parentClass)
             } else {
-                if (hasTestOnlyOpenAnnotation(parentClass)) {
+                if (hasOpenForTestingAnnotation(parentClass)) {
                     cache(parentClass)
                     reportInheritanceUsage(context, node, parentClass)
                 }
@@ -104,7 +104,7 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
         cache.add(element.qualifiedName)
 
     private fun addTestOnlyType(name: String, location: Location) {
-        testOnlyOpenTypes[name] = location
+        openForTestingTypes[name] = location
     }
 
     private fun parentClassOf(node: UClass): PsiJavaCodeReferenceElement? {
@@ -113,16 +113,16 @@ class TestOnlyOpenDetector : Detector(), SourceCodeScanner {
             ?.firstOrNull()
     }
 
-    private fun hasTestOnlyOpenAnnotation(element: PsiJavaCodeReferenceElement): Boolean {
+    private fun hasOpenForTestingAnnotation(element: PsiJavaCodeReferenceElement): Boolean {
         return element.resolve()
             ?.toUElement(UClass::class.java)
             ?.let {
-                hasTestOnlyOpenAnnotation(it)
+                hasOpenForTestingAnnotation(it)
             }
             ?: false
     }
 
-    private fun hasTestOnlyOpenAnnotation(node: UClass): Boolean {
+    private fun hasOpenForTestingAnnotation(node: UClass): Boolean {
         return node.annotations
             .any { FQCN_TEST_ONLY_OPEN == it.qualifiedName }
     }

@@ -23,8 +23,8 @@ class AllOpenIssueRegistryTest {
 
         val issues = registry.issues
 
-        assertThat(issues, hasItem(TestOnlyOpenDetector.TYPE_USAGE))
-        assertThat(issues, hasItem(TestOnlyOpenDetector.INHERITANCE_USAGE))
-        assertThat(issues, hasItem(TestOnlyOpenGradleDetector.ISSUE))
+        assertThat(issues, hasItem(OpenForTestingDetector.TYPE_USAGE))
+        assertThat(issues, hasItem(OpenForTestingDetector.INHERITANCE_USAGE))
+        assertThat(issues, hasItem(OpenForTestingGradleDetector.ISSUE))
     }
 }
